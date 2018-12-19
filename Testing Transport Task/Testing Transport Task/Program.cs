@@ -43,11 +43,9 @@ namespace Testing_Transport_Task
 
             
             Random rnd = new Random();
-            int[] products = new int[nP];
-            for (int i = 0; i < products.Length; i++) products[i] = rnd.Next(1, maxWeight);
-            //Сортировка продукции для того, чтобы начинать развозку с лёгкой продукции
-            Array.Sort(products);
-
+            Dictionary<int, int> products = new Dictionary<int, int>();
+            for (int i = 0; i < nP; i++) products.Add(i,rnd.Next(1, maxWeight));
+            
 
             int[,] availability = new int[nS, nP];
             for (int s = 0; s <= availability.GetUpperBound(0); s++)
@@ -74,7 +72,7 @@ namespace Testing_Transport_Task
             SolveTransportTask(products, availability, deliverycosts, limits, forecast);
         }
 
-        private static void SolveTransportTask(int[] products, int[,] availability, int[,] deliverycosts, int[,] limits, int[,,] forecast)
+        private static void SolveTransportTask(Dictionary<int, int> products, int[,] availability, int[,] deliverycosts, int[,] limits, int[,,] forecast)
         {
             int s, m;
             int eject;
@@ -82,7 +80,7 @@ namespace Testing_Transport_Task
             int[,] tempDeliveryCosts;
             int[,] tempLimits;
             List<int[]> delivery= new List<int[]>();
-
+            products = products.OrderBy(x => x.Value).ToDictionary(x => x.Key, x => x.Value);
             /* отображение матрицы
             Console.Write('\t');
             for (m = 0; m <= deliverycosts.GetUpperBound(1); m++) Console.Write(m.ToString()+'\t');
@@ -106,7 +104,7 @@ namespace Testing_Transport_Task
             for (int d = 0; d <= forecast.GetUpperBound(0); d++)
             {
                 tempLimits = limits.Clone() as int[,];
-                for (int p = 0; p < products.Length; p++)
+                for (int p = 0; p < products.Count; p++)
                 {
                     tempDeliveryCosts = deliverycosts.Clone() as int[,];
                     lowcostCoords = GetLowCost(tempDeliveryCosts);
