@@ -176,7 +176,7 @@ namespace Testing_Transport_Task
                             eject = new[] { forecast[d, p, m], availability[s, p], tempLimits[s, m] / products[p] }.Min();
                             if (eject > 0)
                             {
-                                delivery.Add(new[] { s, m, p, eject });
+                                delivery.Add(new[] { d, s, m, p, eject });
                             }
                             availability[s, p] -= eject;
                             tempLimits[s, m] -= (products[p] * eject);
@@ -197,7 +197,7 @@ namespace Testing_Transport_Task
         //сохранение маршрутного листа в файл
         private static void SaveResult(List<int[]> delivery)
         {
-            string csv = "Warehouse, Shop, Product, Count" + '\r'+'\n';
+            string csv = "Day, Warehouse, Shop, Product, Count" + '\r'+'\n';
             foreach(int[] a in delivery) csv+= String.Join(',', a.Select(x => x.ToString()))+'\r'+'\n';
             File.WriteAllText("output.csv", csv);
             Console.WriteLine("Файл с планом маршрута поставки сохранен в output.csv");
